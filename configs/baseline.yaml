@@ -7,6 +7,7 @@ ROMS:
 files:
   grd: mixtest_3d_grd.nc
   ini: mixtest_3d_ini.nc
+  frc: mixtest_3d_frc.nc
   his: mixtest_3d_his.nc
 
 grid:
@@ -65,3 +66,10 @@ initial:
 
   # Salinity (constant)
   salt_S0: 35.0
+
+forcing:
+  ocean_time_seconds: 0.0   # time stamp for the forcing file
+
+  # Surface wind stress (replace placeholder values with analytical parameters)
+  sustr_tau0: 0.1    # zonal surface stress (N/m^2), placeholder constant
+  svstr_tau0: 0.0    # meridional surface stress (N/m^2), placeholder constant
