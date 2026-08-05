@@ -43,7 +43,6 @@
 
 
 /* ANALYTICAL */
-#define ANA_SMFLUX        /* will add this as file input later */
 #define ANA_STFLUX
 #define ANA_SSFLUX
 #define ANA_BTFLUX
