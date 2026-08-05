@@ -40,7 +40,7 @@ vertical:
   HC: 100.0
 
 time_stepping:
-  NTIMES: 24192  # 60480 for month, 241920 for four months
+  NTIMES: 241920  # 60480 for month, 241920 for four months
   DT: 40.0
   NHIS: 90
 
@@ -53,6 +53,7 @@ structure:
   depth_zero_below: 1.0e9 # set to a large number to keep full column non-zero
   CD: 0.63
   c4: 0.44                # strong mixing
+  xi_limits: [20,30]      # xi grid cell limits for turbine placement
 
 
 initial:

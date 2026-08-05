@@ -1,5 +1,5 @@
 run:
-  name: gen_nostr
+  name: nostruct
 
 structure:
   str_a: 0.0

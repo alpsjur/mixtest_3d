@@ -1,0 +1,6 @@
+run:
+  name: nostrat
+
+initial:
+  # Temperature profile
+  temp_dT: 0.0      # temperature change across thermocline
