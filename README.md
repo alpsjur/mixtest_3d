@@ -1,14 +1,14 @@
-# mixtest_1d
+# mixtest_3d
 
-**Idealized 1D ROMS application for testing turbulence closure / mixing schemes.**
+**Idealized 3D ROMS application for testing turbulence closure / mixing schemes.**
 
-The project provides a fully scripted workflow for running the [ROMS](https://www.myroms.org/) ocean model in a single-column (1D) setup: building input files, running simulations, sweeping over parameter combinations, and analysing/plotting results.
+The project provides a fully scripted workflow for running the [ROMS](https://www.myroms.org/) ocean model in an idealized setup: building input files, running simulations, sweeping over parameter combinations, and analysing/plotting results.
 
 ---
 
 ## Overview
 
-The physical setup is a single-column ocean (uniform depth, periodic horizontal boundaries) forced by a body force in the x-direction. The goal is to isolate and test turbulence closures, particularly the GLS (Generic Length Scale) scheme, as well as a novel **structure drag / mixing** parameterization that represents the effect of subgrid-scale structures (e.g. wind turbine foundations) on flow and turbulence.
+The physical setup is an idealized periodic channel forced by surface stress in the x-direction. The goal is to do a sensistivity testing of a parameterization that represents the effect of subgrid-scale structures (e.g. wind turbine foundations) on flow and turbulence.
 
 ### Key concepts
 
@@ -24,12 +24,12 @@ The physical setup is a single-column ocean (uniform depth, periodic horizontal 
 ## Repository layout
 
 ```
-mixtest_1d/
+mixtest_3d/
 ├── configs/
 │   ├── baseline.yaml          # Default parameter set — all runs start from here
 │   └── variants/              # Per-experiment overrides (merged on top of baseline)
 ├── templates/
-│   ├── mixtest_1d.in.j2       # Jinja2 template for the ROMS input file
+│   ├── mixtest_3d.in.j2       # Jinja2 template for the ROMS input file
 │   ├── k-e_sweep.yaml         # Example sweep definition (k-epsilon variations)
 │   └── gen_sweep.yaml         # Example sweep definition (GEN closure variations)
 ├── tools/
@@ -40,15 +40,8 @@ mixtest_1d/
 │   ├── prep_sweep.py          # Prepare a cartesian parameter sweep
 │   └── run_sweep.py           # Execute all runs in a prepared sweep
 ├── analysis/
-│   ├── prep_timeseries.py     # Volume-averaged time series of a variable
-│   ├── prep_profiles.py       # Horizontally averaged vertical profile
 │   ├── plot_sweep.py          # Plot a variable across all runs in a sweep
 │   └── wrapper.py             # Top-level script: compare two sweeps side by side
-├── tests/
-│   ├── run_tests.py           # Test runner (auto-discovers test_*.py)
-│   ├── test_UV_BODYFORCE.py   # Validates body-force driven acceleration
-│   ├── test_STRUCTURE_DRAG.py # Validates quadratic structure drag
-│   └── test_STRUCTURE_PRODUCTION.py  # Validates TKE production by structures
 ├── utils/
 │   └── utils.py               # Shared utilities (YAML I/O, ROMS metrics, dataset loader)
 ├── roms/                      # ROMS executable and supporting files (do not modify)
@@ -63,7 +56,7 @@ mixtest_1d/
 
 ```bash
 conda env create -f environment.yml
-conda activate mixtest_1d   # or whatever name is in the yml
+conda activate mixtest_3d   # or whatever name is in the yml
 ```
 
 ### 2. ROMS executable
@@ -88,7 +81,7 @@ python tools/run_experiment.py runs/<name>/resolved_config.yaml
 ```
 
 The run produces:
-- `runs/<name>/output/mixtest_1d_his.nc` — ROMS history file
+- `runs/<name>/output/mixtest_3d_his.nc` — ROMS history file
 - `runs/<name>/logs/simulation.log` — ROMS stdout/stderr
 - `runs/<name>/logs/status.yaml` — machine-readable run status
 
@@ -106,17 +99,7 @@ The run produces:
    ```
    Runs that are already marked `done` are skipped automatically.
 
-### Running tests
 
-```bash
-# Use existing model output (runs model first if output is missing):
-python tests/run_tests.py
-
-# Force a fresh model run before each test:
-python tests/run_tests.py --run-model
-
-# Run a specific test:
-python tests/run_tests.py --tests test_UV_BODYFORCE
 ```
 
 ### Analysis
@@ -152,7 +135,6 @@ All configuration lives in YAML files. Runs are built by **deep-merging** `basel
 | `GLS` | Turbulence closure coefficients (see ROMS manual) |
 | `phys` | Coriolis F0, bottom drag RDRG2 |
 | `structure` | `str_a` (area density m⁻¹), `CD` (drag coefficient), `c4` (production coefficient), `depth_zero_below` |
-| `bodyforce` | Horizontal body force amplitude and ramp timing |
 | `initial` | Initial temperature/salinity profile parameters |
 | `files` | NetCDF file names for grid, IC, and history output |
 
@@ -164,7 +146,7 @@ All configuration lives in YAML files. Runs are built by **deep-merging** `basel
 baseline.yaml ─┐
 variant.yaml  ─┴─► prep_experiment.py ──► make_grd.py  → grid NetCDF
                                       ──► make_ini.py  → IC NetCDF
-                                      ──► mixtest_1d.in.j2 → ROMS input file
+                                      ──► mixtest_3d.in.j2 → ROMS input file
                                       ──► resolved_config.yaml
 
 resolved_config.yaml ──► run_experiment.py ──► roms/romsS → history NetCDF
@@ -180,14 +162,4 @@ history NetCDF + resolved_config.yaml ──► open_roms_dataset()
 - `prep_ds` — attaches xgcm grid metrics (dx, dy, dz, dA, dV) to a dataset
 - `open_roms_dataset` — one-call shortcut: load config → open NetCDF → prep_ds
 
----
 
-## Tests
-
-Each test verifies one physical mechanism against an analytical solution:
-
-| Test | Physics | Pass criterion |
-|---|---|---|
-| `test_UV_BODYFORCE` | Uniform body force → linear acceleration u(t) = F·t | All grid points match u_analytical with rtol=1e-5 |
-| `test_STRUCTURE_DRAG` | Body force balanced by structure drag → u(t) = √(F/α)·tanh(t√(Fα)) | All grid points match u_analytical with rtol=1e-4 |
-| `test_STRUCTURE_PRODUCTION` | Structure TKE production balances dissipation in steady state | Domain-integrated ε matches Pd within 2% |

@@ -68,7 +68,7 @@
 
 ! C-preprocessing Flag.
 
-    MyAppCPP = mixtest_1d
+    MyAppCPP = mixtest_3d
 
 ! Input variable information file name.  This file needs to be processed
 ! first so all information arrays can be initialized properly.
@@ -182,14 +182,14 @@ ad_Vadvection == C4       \                     ! temperature
 !                   1       2       3       4
 
 
-   LBC(isFsur) ==   Per     Per     Per     Per         ! free-surface        
-   LBC(isUbar) ==   Per     Per     Per     Per         ! 2D U-momentum       
-   LBC(isVbar) ==   Per     Per     Per     Per         ! 2D V-momentum       
-   LBC(isUvel) ==   Per     Per     Per     Per         ! 3D U-momentum       
-   LBC(isVvel) ==   Per     Per     Per     Per         ! 3D V-momentum       
-   LBC(isMtke) ==   Per     Per     Per     Per         ! mixing TKE          
-   LBC(isTvar) ==   Per     Per     Per     Per \       ! temperature         
-                    Per     Per     Per     Per         ! salinity
+   LBC(isFsur) ==   Per     Clo     Per     Clo         ! free-surface        
+   LBC(isUbar) ==   Per     Clo     Per     Clo         ! 2D U-momentum       
+   LBC(isVbar) ==   Per     Clo     Per     Clo         ! 2D V-momentum       
+   LBC(isUvel) ==   Per     Clo     Per     Clo         ! 3D U-momentum       
+   LBC(isVvel) ==   Per     Clo     Per     Clo         ! 3D V-momentum       
+   LBC(isMtke) ==   Per     Clo     Per     Clo         ! mixing TKE          
+   LBC(isTvar) ==   Per     Clo     Per     Clo \       ! temperature         
+                    Per     Clo     Per     Clo         ! salinity
 
 ! Adjoint-based algorithms can have different lateral boundary
 ! conditions keywords.
@@ -410,17 +410,6 @@ parametrization
 
   Vtransform == {{ vertical.Vtransform }}                          ! transformation equation
  Vstretching == {{ vertical.Vstretching }}                          ! stretching function
-
-
-! Uniform body force (acceleration) parameters. Used when CPP option
-! UV_BODYFORCE is activated. The force ramps linearly from zero to full
-! strength between BFRC_TSTR and BFRC_TEND (days). If BFRC_TEND <=
-! BFRC_TSTR the full force is applied immediately with no ramp.
-
-      BFRC_U == {{ bodyforce.BFRC_U }}d-7                     ! m/s2, x-direction
-      BFRC_V == {{ bodyforce.BFRC_V }}d-7                     ! m/s2, y-direction
-    BFRC_TSTR == {{ bodyforce.BFRC_TSTR }}d0                    ! days, ramp start
-    BFRC_TEND == {{ bodyforce.BFRC_TEND }}d0                    ! days, ramp end
 
 ! Vertical S-coordinates parameters (see below for details), [1:Ngrids].
 
@@ -1111,8 +1100,8 @@ PIO_I2C_Preq = 65                 ! Maximum pending I2C requests
 
 ! Input NetCDF file names, [1:Ngrids].
 
-     GRDNAME == {{ io.input_dir }}/mixtest_1d_grd.nc
-     ININAME == {{ io.input_dir }}/mixtest_1d_ini.nc
+     GRDNAME == {{ io.input_dir }}/mixtest_3d_grd.nc
+     ININAME == {{ io.input_dir }}/mixtest_3d_ini.nc
      ITLNAME == roms_itl.nc
      IRPNAME == roms_irp.nc
      IADNAME == roms_iad.nc
@@ -1204,20 +1193,20 @@ PIO_I2C_Preq = 65                 ! Maximum pending I2C requests
 
 ! Output NetCDF file names, [1:Ngrids].
 
-     DAINAME == {{ io.output_dir }}/mixtest_1d_dai.nc
-     GSTNAME == {{ io.output_dir }}/mixtest_1d_gst.nc
-     RSTNAME == {{ io.output_dir }}/mixtest_1d_rst.nc
-     HISNAME == {{ io.output_dir }}/mixtest_1d_his.nc
-     XTRNAME == {{ io.output_dir }}/mixtest_1d_xtr.nc
-     QCKNAME == {{ io.output_dir }}/mixtest_1d_qck.nc
-     TLMNAME == {{ io.output_dir }}/mixtest_1d_tlm.nc
-     TLFNAME == {{ io.output_dir }}/mixtest_1d_tlf.nc
-     ADJNAME == {{ io.output_dir }}/mixtest_1d_adj.nc
-     AVGNAME == {{ io.output_dir }}/mixtest_1d_avg.nc
-     HARNAME == {{ io.output_dir }}/mixtest_1d_har.nc
-     DIANAME == {{ io.output_dir }}/mixtest_1d_dia.nc
-     STANAME == {{ io.output_dir }}/mixtest_1d_sta.nc
-     FLTNAME == {{ io.output_dir }}/mixtest_1d_flt.nc
+     DAINAME == {{ io.output_dir }}/mixtest_3d_dai.nc
+     GSTNAME == {{ io.output_dir }}/mixtest_3d_gst.nc
+     RSTNAME == {{ io.output_dir }}/mixtest_3d_rst.nc
+     HISNAME == {{ io.output_dir }}/mixtest_3d_his.nc
+     XTRNAME == {{ io.output_dir }}/mixtest_3d_xtr.nc
+     QCKNAME == {{ io.output_dir }}/mixtest_3d_qck.nc
+     TLMNAME == {{ io.output_dir }}/mixtest_3d_tlm.nc
+     TLFNAME == {{ io.output_dir }}/mixtest_3d_tlf.nc
+     ADJNAME == {{ io.output_dir }}/mixtest_3d_adj.nc
+     AVGNAME == {{ io.output_dir }}/mixtest_3d_avg.nc
+     HARNAME == {{ io.output_dir }}/mixtest_3d_har.nc
+     DIANAME == {{ io.output_dir }}/mixtest_3d_dia.nc
+     STANAME == {{ io.output_dir }}/mixtest_3d_sta.nc
+     FLTNAME == {{ io.output_dir }}/mixtest_3d_flt.nc
 
 ! Input ASCII parameter filenames.
 

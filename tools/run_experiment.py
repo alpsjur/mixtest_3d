@@ -43,7 +43,7 @@ def run_single_resolved(resolved_cfg_path: str) -> dict:
     ensure_dir(logs_dir)
 
     input_dir = cfg["io"]["input_dir"]  # absolute path injected by prep
-    in_file = os.path.join(input_dir, "mixtest_1d.in")
+    in_file = os.path.join(input_dir, "mixtest_3d.in")
     log_file = os.path.join(logs_dir, "simulation.log")
 
     # Preflight checks

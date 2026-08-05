@@ -70,13 +70,13 @@ def write_resolved_config(cfg: dict, run_dir: str) -> str:
         yaml.safe_dump(cfg, f, sort_keys=False)
     return resolved_path
 
-def render_roms_input(cfg: dict, input_dir: str, template_name: str = "mixtest_1d.in.j2") -> str:
-    """Render ROMS input file into <run>/input/mixtest_1d.in and return its path."""
+def render_roms_input(cfg: dict, input_dir: str, template_name: str = "mixtest_3d.in.j2") -> str:
+    """Render ROMS input file into <run>/input/mixtest_3d.in and return its path."""
     template_dir = os.path.join(ROOT_DIR, "templates")
     env = Environment(loader=FileSystemLoader(template_dir), autoescape=False)
     tmpl = env.get_template(template_name)
     rendered = tmpl.render(**cfg)
-    out_in_path = os.path.join(input_dir, "mixtest_1d.in")
+    out_in_path = os.path.join(input_dir, "mixtest_3d.in")
     with open(out_in_path, "w") as f:
         f.write(rendered)
     return out_in_path

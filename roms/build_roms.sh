@@ -158,7 +158,7 @@ done
 # determine the name of the ".h" header file with the application
 # CPP definitions.
 
-export   ROMS_APPLICATION=MIXTEST_1D
+export   ROMS_APPLICATION=MIXTEST_3D
 
 # Set a local environmental variable to define the path to the directories
 # where the ROMS source code is located (MY_ROOT_DIR), and this project's

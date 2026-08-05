@@ -7,8 +7,8 @@
 **
 ** Options for Test Mix.
 **
-** Application flag:   MIXTEST-1D
-** Input script:       mixtest-1d.in
+** Application flag:   MIXTEST-3D
+** Input script:       mixtest-3d.in
 */
 
 
@@ -54,6 +54,4 @@
 #define STRUCTURE_MIXING
 
 /* Idealized testing */
-#define UV_BODYFORCE      /* Body force in momentum equations, for testing 1D application */
-#undef UV_ADV             /* turn OFF advection terms */
 #undef UV_COR             /* turn OFF Coriolis term */

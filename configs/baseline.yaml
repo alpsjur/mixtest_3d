@@ -2,16 +2,16 @@ run:
   name: baseline
 
 ROMS: 
-  yaml_loc: /home/ansju8054/Documents/Code/havvind-mix/mixtest_1d/roms
+  yaml_loc: /home/ansju8054/Documents/Code/havvind-mix/mixtest_3d/roms
 
 files:
-  grd: mixtest_1d_grd.nc
-  ini: mixtest_1d_ini.nc
-  his: mixtest_1d_his.nc
+  grd: mixtest_3d_grd.nc
+  ini: mixtest_3d_ini.nc
+  his: mixtest_3d_his.nc
 
 grid:
-  Lm: 10
-  Mm: 12
+  Lm: 50        # number of interior xi points
+  Mm: 12        # number of interior eta points
   N: 40
   H0: 150.0     # uniform depth (m)
   DX: 800.0     # grid spacing xi (m)
@@ -39,25 +39,19 @@ vertical:
   HC: 100.0
 
 time_stepping:
-  NTIMES: 30240  # 60480 for month, 15120 for week, 2160 for day
+  NTIMES: 24192  # 60480 for month, 241920 for four months
   DT: 40.0
   NHIS: 90
 
 phys:
   F0: 0       # Coriolis (s^-1)
-  RDRG2: 0    # Quadratic bottom drag (e-3)
+  RDRG2: 3    # Quadratic bottom drag (e-3)
 
 structure:
-  str_a: 0.0001            
+  str_a: 0.0001           # about 4 turbines per grid cell
   depth_zero_below: 1.0e9 # set to a large number to keep full column non-zero
   CD: 0.63
-  c4: 0.4
-
-bodyforce:
-  BFRC_U: 3.15        # e-7 m/s2, x-direction
-  BFRC_V: 0.0         # e-7 m/s2, y-direction 
-  BFRC_TSTR: 0.0      # days, ramp start
-  BFRC_TEND: 0.0      # days, ramp end
+  c4: 0.44                # strong mixing
 
 
 initial:
@@ -65,7 +59,7 @@ initial:
 
   # Temperature profile
   temp_T0: 20.0     # Surface temperatur
-  temp_dT: 10.0    # temperature change across thermocline
+  temp_dT: 10.0     # temperature change across thermocline
   temp_zt: 40.0     # depth of thermocline center
   temp_ht: 10.0     # thickness of thermocline
 
