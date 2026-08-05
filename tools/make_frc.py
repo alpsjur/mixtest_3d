@@ -93,11 +93,14 @@ def make_frc_from_config(cfg: dict) -> str:
     frc_path = os.path.join(input_dir, frc_name)
     os.makedirs(os.path.dirname(frc_path) or ".", exist_ok=True)
 
-    # Build forcing time axis — independent of model time stepping
+    # Build forcing time axis — independent of model time stepping resolution,
+    # but guaranteed to cover the full simulation duration.
+    DT     = float(cfg["time_stepping"]["DT"])
+    NTIMES = int(cfg["time_stepping"]["NTIMES"])
     t_start = float(cfg["forcing"].get("t_start", 0.0))
-    t_end   = float(cfg["forcing"]["t_end"])
+    t_end   = t_start + NTIMES * DT
     dt_frc  = float(cfg["forcing"]["dt_frc"])
-    ocean_time = np.arange(t_start, t_end + dt_frc * 0.5, dt_frc)
+    ocean_time = np.arange(t_start, t_end + dt_frc, dt_frc)
 
     # Read grid dimensions
     with nc.Dataset(grd_path, "r") as grd:
