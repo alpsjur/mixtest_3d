@@ -129,23 +129,23 @@ def make_frc_from_config(cfg: dict) -> str:
         f.createDimension("eta_u",   eta_u)
         f.createDimension("xi_v",    xi_v)
         f.createDimension("eta_v",   eta_v)
-        f.createDimension("ocean_time", None)
+        f.createDimension("sms_time", None)
 
-        # ocean_time
-        ot = f.createVariable("ocean_time", "f8", ("ocean_time",))
+        # sms_time — required name for surface momentum stress time coordinate
+        ot = f.createVariable("sms_time", "f8", ("sms_time",))
         ot.long_name = "time since simulation start"
         ot.units = "seconds since 0001-01-01 00:00:00"
         ot.calendar = "360.0 days in every year"
         ot[:] = ocean_time
 
         # sustr — surface zonal stress on u-points
-        su = f.createVariable("sustr", "f8", ("ocean_time", "eta_u", "xi_u"))
+        su = f.createVariable("sustr", "f8", ("sms_time", "eta_u", "xi_u"))
         su.long_name = "surface u-momentum stress"
         su.units = "N/m^2"
         su[:] = sustr
 
         # svstr — surface meridional stress on v-points
-        sv = f.createVariable("svstr", "f8", ("ocean_time", "eta_v", "xi_v"))
+        sv = f.createVariable("svstr", "f8", ("sms_time", "eta_v", "xi_v"))
         sv.long_name = "surface v-momentum stress"
         sv.units = "N/m^2"
         sv[:] = svstr
