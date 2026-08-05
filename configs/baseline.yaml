@@ -68,7 +68,9 @@ initial:
   salt_S0: 35.0
 
 forcing:
-  ocean_time_seconds: 0.0   # time stamp for the forcing file
+  t_start: 0.0      # start of forcing time axis (s)
+  t_end: 968400.0   # end of forcing time axis (s); must cover full simulation
+  dt_frc: 86400.0   # forcing time step (s); ROMS interpolates between snapshots
 
   # Surface wind stress (replace placeholder values with analytical parameters)
   sustr_tau0: 0.1    # zonal surface stress (N/m^2), placeholder constant
