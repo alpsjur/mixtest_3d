@@ -97,10 +97,10 @@ def make_frc_from_config(cfg: dict) -> str:
     # but guaranteed to cover the full simulation duration.
     DT     = float(cfg["time_stepping"]["DT"])
     NTIMES = int(cfg["time_stepping"]["NTIMES"])
-    t_start = float(cfg["forcing"].get("t_start", 0.0))
-    t_end   = t_start + NTIMES * DT
+    t_start = 0
+    t_end   = NTIMES * DT
     dt_frc  = float(cfg["forcing"]["dt_frc"])
-    ocean_time = np.arange(t_start, t_end + dt_frc, dt_frc)
+    frc_time = np.arange(t_start, t_end + dt_frc, dt_frc)
 
     # Read grid dimensions
     with nc.Dataset(grd_path, "r") as grd:
@@ -113,8 +113,8 @@ def make_frc_from_config(cfg: dict) -> str:
     eta_v = eta_rho - 1
 
     # Compute forcing fields — shape (n_time, eta, xi)
-    sustr = sustr_forcing(ocean_time, eta_u, xi_u, cfg)
-    svstr = svstr_forcing(ocean_time, eta_v, xi_v, cfg)
+    sustr = sustr_forcing(frc_time, eta_u, xi_u, cfg)
+    svstr = svstr_forcing(frc_time, eta_v, xi_v, cfg)
 
     # Write forcing NetCDF
     with nc.Dataset(frc_path, "w", format="NETCDF4") as f:
@@ -136,7 +136,7 @@ def make_frc_from_config(cfg: dict) -> str:
         ot.long_name = "time since simulation start"
         ot.units = "seconds since 0001-01-01 00:00:00"
         ot.calendar = "360.0 days in every year"
-        ot[:] = ocean_time
+        ot[:] = frc_time
 
         # sustr — surface zonal stress on u-points
         su = f.createVariable("sustr", "f8", ("sms_time", "eta_u", "xi_u"))

@@ -40,7 +40,7 @@ vertical:
   HC: 100.0
 
 time_stepping:
-  NTIMES: 241920  # 60480 for month, 241920 for four months
+  NTIMES: 60480  # 60480 for month
   DT: 40.0
   NHIS: 90
 
@@ -49,7 +49,7 @@ phys:
   RDRG2: 3    # Quadratic bottom drag (e-3)
 
 structure:
-  str_a: 0.0001           # about 4 turbines per grid cell
+  str_a: 0.0001           # about 5 turbines with a diameter of 12 m per grid cell
   depth_zero_below: 1.0e9 # set to a large number to keep full column non-zero
   CD: 0.63
   c4: 0.44                # strong mixing
@@ -69,8 +69,6 @@ initial:
   salt_S0: 35.0
 
 forcing:
-  t_start: 0.0      # start of forcing time axis (s)
-  t_end: 968400.0   # end of forcing time axis (s); must cover full simulation
   dt_frc: 86400.0   # forcing time step (s); ROMS interpolates between snapshots
 
   # Surface wind stress (replace placeholder values with analytical parameters)
