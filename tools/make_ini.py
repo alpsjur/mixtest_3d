@@ -33,54 +33,80 @@ def zeta_initial(x_rho, y_rho, cfg):
     """
     return np.zeros_like(x_rho, dtype=np.float64)
 
-def ubar_initial(eta_u, xi_u, cfg):
+def ubar_initial(x_u, y_u, cfg):
     """
     Initial depth-averaged u-velocity (ubar). Currently zero (no background flow).
 
     To add a uniform barotropic current, use:
-        return np.full((eta_u, xi_u), cfg["initial"]["ubar0"], dtype=np.float64)
+        return np.full_like(x_u, cfg["initial"]["ubar0"], dtype=np.float64)
     """
-    return np.zeros((eta_u, xi_u), dtype=np.float64)
+    return np.zeros_like(x_u, dtype=np.float64)
 
 
-def vbar_initial(eta_v, xi_v, cfg):
+def vbar_initial(x_v, y_v, cfg):
     """
     Initial depth-averaged v-velocity (vbar). Currently zero (no background flow).
 
     To add a uniform barotropic current, use:
-        return np.full((eta_v, xi_v), cfg["initial"]["vbar0"], dtype=np.float64)
+        return np.full_like(x_v, cfg["initial"]["vbar0"], dtype=np.float64)
     """
-    return np.zeros((eta_v, xi_v), dtype=np.float64)
+    return np.zeros_like(x_v, dtype=np.float64)
 
 
-def u_initial(N, eta_u, xi_u, cfg):
+def u_initial(z_r, cfg):
     """
-    Initial 3D u-velocity field. Currently zero (no background shear).
+    Initial 3D u-velocity.
 
-    To add a depth-varying shear profile, use:
-        u_shear = cfg["initial"]["u_shear"]   # e.g. shear rate [1/s]
-        return u_shear * z_r_u  # z_r_u must be passed in if depth-dependent
+    Supported options under cfg["initial"]["u_type"]:
+
+      1. "uniform"
+         Required:
+           - u0
+
+      2. "tanh_shear"
+         Required:
+           - u0      : upper-layer velocity [m/s]
+           - u_deep  : deep velocity [m/s]
+           - u_zt    : transition depth [m, positive down]
+           - u_ht    : transition half-thickness [m]
     """
-    return np.zeros((N, eta_u, xi_u), dtype=np.float64)
+    u_type = cfg["initial"].get("u_type", "uniform")
+
+    if u_type == "uniform":
+        u0 = float(cfg["initial"]["u0"])
+        return np.full_like(z_r, u0, dtype=np.float64)
+
+    elif u_type == "tanh_shear":
+        u0 = float(cfg["initial"]["u0"])
+        u_deep = float(cfg["initial"]["u_deep"])
+        u_zt = float(cfg["initial"]["u_zt"])
+        u_ht = float(cfg["initial"]["u_ht"])
+
+        # Near surface: approximately u0
+        # At depth: approximately u_deep
+        return u_deep + 0.5 * (u0 - u_deep) * (1.0 + np.tanh((z_r + u_zt) / u_ht))
+
+    else:
+        raise ValueError(f"Unsupported initial u_type: {u_type}")
 
 
-def v_initial(N, eta_v, xi_v, cfg):
+def v_initial(z_r, cfg):
     """
     Initial 3D v-velocity field. Currently zero (no background shear).
 
     To add a depth-varying shear profile, see u_initial for the approach.
     """
-    return np.zeros((N, eta_v, xi_v), dtype=np.float64)
+    return np.zeros_like(z_r, dtype=np.float64)
 
 def temp_initial(z_r, cfg):
     """
     Initial temperature profile using a hyperbolic tangent thermocline.
 
     The profile is parameterized by four values in cfg["initial"]:
-      - temp_T0 : surface temperature (°C)
-      - temp_dT : total temperature drop across the thermocline (°C)
-      - temp_zt : depth of the thermocline centre (m, positive down)
-      - temp_ht : half-thickness of the thermocline (m)
+      - T0 : surface temperature (°C)
+      - dT : total temperature drop across the thermocline (°C)
+      - zt : depth of the thermocline centre (m, positive down)
+      - ht : half-thickness of the thermocline (m)
 
     The formula is:
         T(z) = (T0 - dT) + (dT/2) * (1 + tanh((z + zt) / ht))
@@ -93,11 +119,11 @@ def temp_initial(z_r, cfg):
         alpha = ...                  # thermal expansion coefficient
         return T0 + (N2 / (g * alpha)) * z_r
     """
-    temp_T0 = cfg["initial"]["temp_T0"]
-    temp_dT = cfg["initial"]["temp_dT"]
-    temp_zt = cfg["initial"]["temp_zt"]
-    temp_ht = cfg["initial"]["temp_ht"]
-    return (temp_T0 - temp_dT) + (temp_dT / 2.0) * (1 + np.tanh((z_r + temp_zt) / temp_ht))
+    T0 = cfg["initial"]["T0"]
+    dT = cfg["initial"]["dT"]
+    zt = cfg["initial"]["zt"]
+    ht = cfg["initial"]["ht"]
+    return (T0 - dT) + (dT / 2.0) * (1 + np.tanh((z_r + zt) / ht))
 
 
 def salt_initial(z_r, cfg):
@@ -165,10 +191,10 @@ def make_ini_from_config(cfg: dict) -> str:
 
     # Allocate initial fields using parameterized functions
     zeta = zeta_initial(x_rho, y_rho, cfg)
-    ubar = ubar_initial(eta_u, xi_u, cfg)
-    vbar = vbar_initial(eta_v, xi_v, cfg)
-    u_3d = u_initial(N, eta_u, xi_u, cfg)
-    v_3d = v_initial(N, eta_v, xi_v, cfg)
+    ubar = ubar_initial(x_u, y_u, cfg)
+    vbar = vbar_initial(x_v, y_v, cfg)
+    u_3d = u_initial(z_r_u, cfg)
+    v_3d = v_initial(z_r_v, cfg)
     temp = temp_initial(z_r, cfg)
     salt = salt_initial(z_r, cfg)
 

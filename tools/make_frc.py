@@ -22,13 +22,13 @@ import yaml
 # Surface stress functions
 # ---------------------------------------------------------------------------
 
-def sustr_forcing(ocean_time, eta_u, xi_u, cfg):
+def sustr_forcing(frc_time, eta_u, xi_u, cfg):
     """
     Surface zonal wind stress on u-points (N/m^2).
 
     Parameters
     ----------
-    ocean_time : np.ndarray, shape (n_time,)
+    frc_time : np.ndarray, shape (n_time,)
         Time axis in seconds since simulation start.
     eta_u, xi_u : int
         Spatial dimensions of the u-grid.
@@ -42,21 +42,21 @@ def sustr_forcing(ocean_time, eta_u, xi_u, cfg):
     Replace the placeholder with an analytical expression, e.g.:
         tau0 = cfg["forcing"]["sustr_tau0"]
         T    = cfg["forcing"]["sustr_period"]
-        tau  = tau0 * np.sin(2 * np.pi * ocean_time / T)  # (n_time,)
-        return np.broadcast_to(tau[:, None, None], (len(ocean_time), eta_u, xi_u)).copy()
+        tau  = tau0 * np.sin(2 * np.pi * frc_time / T)  # (n_time,)
+        return np.broadcast_to(tau[:, None, None], (len(frc_time), eta_u, xi_u)).copy()
     """
-    n_time = len(ocean_time)
+    n_time = len(frc_time)
     tau0 = cfg["forcing"].get("sustr_tau0", 0.1)
     return np.full((n_time, eta_u, xi_u), tau0, dtype=np.float64)
 
 
-def svstr_forcing(ocean_time, eta_v, xi_v, cfg):
+def svstr_forcing(frc_time, eta_v, xi_v, cfg):
     """
     Surface meridional wind stress on v-points (N/m^2).
 
     Parameters
     ----------
-    ocean_time : np.ndarray, shape (n_time,)
+    frc_time : np.ndarray, shape (n_time,)
         Time axis in seconds since simulation start.
     eta_v, xi_v : int
         Spatial dimensions of the v-grid.
@@ -67,7 +67,7 @@ def svstr_forcing(ocean_time, eta_v, xi_v, cfg):
     -------
     np.ndarray, shape (n_time, eta_v, xi_v)
     """
-    n_time = len(ocean_time)
+    n_time = len(frc_time)
     tau0 = cfg["forcing"].get("svstr_tau0", 0.0)
     return np.full((n_time, eta_v, xi_v), tau0, dtype=np.float64)
 
@@ -80,8 +80,6 @@ def make_frc_from_config(cfg: dict) -> str:
     Create the surface forcing file using values from a resolved config dict.
 
     The forcing has its own time axis defined entirely in cfg["forcing"]:
-      - t_start : start time in seconds (default 0)
-      - t_end   : end time in seconds (must cover the full simulation)
       - dt_frc  : forcing time step in seconds
     ROMS will interpolate between forcing snapshots at run time.
     """

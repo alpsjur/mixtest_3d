@@ -479,9 +479,9 @@ parametrization
 
      LsshCLM == F                          ! sea-surface height
       Lm2CLM == F                          ! 2D momentum
-      Lm3CLM == F                          ! 3D momentum
+      Lm3CLM == T                          ! 3D momentum
 
-  LtracerCLM == F F                        ! temperature, salinity, inert
+  LtracerCLM == T F                        ! temperature, salinity, inert
 
 ! Logical switches (TRUE/FALSE) to nudge the desired climatology field(s).
 ! If not analytical climatology fields, users need to turn ON the logical
@@ -489,9 +489,9 @@ parametrization
 ! that are needed for nudging. See glossary below for details.
 
  LnudgeM2CLM == F                          ! 2D momentum
- LnudgeM3CLM == F                          ! 3D momentum
+ LnudgeM3CLM == T                          ! 3D momentum
 
-  LnudgeTCLM == F F                        ! temperature, salinity, inert
+  LnudgeTCLM == T F                        ! temperature, salinity, inert
 
 ! Starting (DstrS) and ending (DendS) day for adjoint sensitivity forcing.
 ! DstrS must be less or equal to DendS. If both values are zero, their
@@ -1100,8 +1100,8 @@ PIO_I2C_Preq = 65                 ! Maximum pending I2C requests
 
 ! Input NetCDF file names, [1:Ngrids].
 
-     GRDNAME == {{ io.input_dir }}/mixtest_3d_grd.nc
-     ININAME == {{ io.input_dir }}/mixtest_3d_ini.nc
+     GRDNAME == {{ io.input_dir }}/{{ files.grd }}
+     ININAME == {{ io.input_dir }}/{{ files.ini }}
      ITLNAME == roms_itl.nc
      IRPNAME == roms_irp.nc
      IADNAME == roms_iad.nc
@@ -1155,11 +1155,11 @@ PIO_I2C_Preq = 65                 ! Maximum pending I2C requests
 
    NCLMFILES == 1                          ! number of climatology files
 
-     CLMNAME == roms_clm.nc
+     CLMNAME == {{ io.input_dir }}/{{ files.clm }}
 
 ! Input climatology nudging coefficients file name.
 
-     NUDNAME == roms_nud.nc
+     NUDNAME == {{ io.input_dir }}/{{ files.nud }}
 
 ! Input Sources/Sinks forcing (like river runoff) file name.
 
@@ -1189,14 +1189,14 @@ PIO_I2C_Preq = 65                 ! Maximum pending I2C requests
 
      NFFILES == 1                          ! number of unique forcing files
 
-     FRCNAME == {{ io.input_dir }}/mixtest_3d_frc.nc
+     FRCNAME == {{ io.input_dir }}/{{ files.frc }}
 
 ! Output NetCDF file names, [1:Ngrids].
 
      DAINAME == {{ io.output_dir }}/mixtest_3d_dai.nc
      GSTNAME == {{ io.output_dir }}/mixtest_3d_gst.nc
      RSTNAME == {{ io.output_dir }}/mixtest_3d_rst.nc
-     HISNAME == {{ io.output_dir }}/mixtest_3d_his.nc
+     HISNAME == {{ io.output_dir }}/{{ files.his }}
      XTRNAME == {{ io.output_dir }}/mixtest_3d_xtr.nc
      QCKNAME == {{ io.output_dir }}/mixtest_3d_qck.nc
      TLMNAME == {{ io.output_dir }}/mixtest_3d_tlm.nc

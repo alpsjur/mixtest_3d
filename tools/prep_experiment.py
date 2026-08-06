@@ -19,6 +19,8 @@ RUNS_ROOT = os.path.join(ROOT_DIR, "runs")
 from tools.make_grd import make_grid_from_config
 from tools.make_ini import make_ini_from_config
 from tools.make_frc import make_frc_from_config
+from tools.make_clm import make_clm_from_config
+from tools.make_nud import make_nud_from_config
 
 
 def _sha256_hex(s: str) -> str:
@@ -108,7 +110,9 @@ def prepare_run_from_resolved(cfg: dict) -> dict:
     # 5) Generate artifacts
     grid_path = make_grid_from_config(cfg)
     ini_path = make_ini_from_config(cfg)
-    frc_path = make_frc_from_config(cfg)
+    #frc_path = make_frc_from_config(cfg)
+    clm_path = make_clm_from_config(cfg)
+    nud_path = make_nud_from_config(cfg)
 
     # 6) Render ROMS input file
     in_path = render_roms_input(cfg, input_dir)
@@ -121,7 +125,9 @@ def prepare_run_from_resolved(cfg: dict) -> dict:
         "resolved_config": resolved_path,
         "grid": grid_path,
         "ini": ini_path,
-        "frc": frc_path,
+        #"frc": frc_path,
+        "clm": clm_path,
+        "nud": nud_path,
         "in_file": in_path,
         "hash_exact": cfg["_meta"]["hash"]["exact"],
     }

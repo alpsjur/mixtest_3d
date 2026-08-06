@@ -43,6 +43,7 @@
 
 
 /* ANALYTICAL */
+#define ANA_SMFLUX
 #define ANA_STFLUX
 #define ANA_SSFLUX
 #define ANA_BTFLUX
