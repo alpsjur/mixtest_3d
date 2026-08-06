@@ -14,7 +14,7 @@ files:
   
 
 grid:
-  Lm: 80        # number of interior xi points
+  Lm: 120        # number of interior xi points
   Mm: 12        # number of interior eta points
   N: 40
   H0: 150.0     # uniform depth (m)
@@ -56,7 +56,7 @@ structure:
   depth_zero_below: 1.0e9 # set to a large number to keep full column non-zero
   CD: 0.63
   c4: 0.44                # strong mixing
-  xi_limits: [45,55]      # xi grid cell limits for turbine placement
+  xi_limits: [70,80]      # xi grid cell limits for turbine placement
 
 
 initial:
@@ -73,7 +73,7 @@ initial:
 
   # Velocity profile
   u_type: uniform
-  u0: 0.20
+  u0: 0.15
 
   v0: 0.0
 
@@ -89,14 +89,14 @@ nudging:
   tracer:
     zone_start: 0
     taper_width: 10
-    core_width: 20
-    tau_core_days: 2.0
-    tau_edge_days: 20.0
+    core_width: 30
+    tau_core_days: 0.25
+    tau_edge_days: 10.0
 
   m3:
     zone_start: 0
     taper_width: 10
-    core_width: 20
-    tau_core_days: 2.0
-    tau_edge_days: 20.0
+    core_width: 40
+    tau_core_days: 0.25
+    tau_edge_days: 10.0
 
